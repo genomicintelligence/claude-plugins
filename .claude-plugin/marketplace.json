@@ -1,0 +1,16 @@
+{
+  "name": "genomic-intelligence",
+  "description": "Claude Code plugins from Genomic Intelligence: DNA sequence analysis with transformer models.",
+  "owner": {
+    "name": "Genomic Intelligence",
+    "email": "contact@genomicintelligence.ai",
+    "url": "https://genomicintelligence.ai"
+  },
+  "plugins": [
+    {
+      "name": "genomic-intelligence",
+      "source": "./plugins/genomic-intelligence",
+      "description": "The Genomic Intelligence skill and hosted MCP server: promoter, splice, enhancer, chromatin, annotation and expression predictions on DNA sequences."
+    }
+  ]
+}

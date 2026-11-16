@@ -1,0 +1,74 @@
+name: Sync skill
+
+# Pulls the published skill zip and, when its content differs from
+# plugins/genomic-intelligence/skills/genomic-intelligence, replaces the folder,
+# bumps the plugin's patch version and commits to main.
+#
+# A push made with GITHUB_TOKEN does not trigger other workflows, so this job
+# runs the same checks as CI before it commits.
+#
+# Maintainer note: GitHub disables scheduled workflows in a public repo after
+# 60 days with no repository activity, and this job's own commits only happen
+# when the skill changes. If the skill is quiet for two months the schedule
+# stops silently. Re-enable it from the Actions tab (or
+# `gh workflow enable sync-skill.yml`) and dispatch it once.
+
+on:
+  schedule:
+    - cron: "23 6 * * *"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: sync-skill
+  cancel-in-progress: false
+
+env:
+  CLAUDE_CODE_VERSION: 2.1.321
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - name: Sync from the published zip
+        id: sync
+        run: scripts/sync-skill.sh --bump
+
+      - name: Checks
+        if: steps.sync.outputs.changed == 'true'
+        run: |
+          npx -y "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" plugin validate --strict .
+          npx -y "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" plugin validate --strict plugins/genomic-intelligence
+          # The directory profile runs WITHOUT --strict on purpose: its only
+          # warning today is ICON_MISSING, and no icon has been chosen yet (the
+          # first icon submitted may become the permanent listing icon). Add
+          # plugins/genomic-intelligence/.claude-plugin/icon.png, then add
+          # --strict here and in the other workflow.
+          npx -y "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" plugin validate --profile directory plugins/genomic-intelligence
+          python3 -I scripts/check-manifests.py
+          python3 -I scripts/tests/test_fetch_skill.py
+          scripts/check-skill.sh
+          scripts/check-keys.sh --history
+
+      - name: Commit and push
+        if: steps.sync.outputs.changed == 'true'
+        env:
+          VERSION: ${{ steps.sync.outputs.version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A plugins/genomic-intelligence
+          git commit -m "skill: sync from the published zip (v${VERSION})"
+          git push origin HEAD:main

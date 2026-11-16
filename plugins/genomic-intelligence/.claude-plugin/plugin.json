@@ -1,0 +1,25 @@
+{
+  "name": "genomic-intelligence",
+  "displayName": "Genomic Intelligence",
+  "version": "0.1.0",
+  "description": "DNA sequence analysis with Genomic Intelligence models. Bundles the Genomic Intelligence skill (REST client, recipes, example sequences) and the hosted MCP server. Research use only.",
+  "author": {
+    "name": "Genomic Intelligence",
+    "email": "contact@genomicintelligence.ai",
+    "url": "https://genomicintelligence.ai"
+  },
+  "homepage": "https://docs.genomicintelligence.ai",
+  "icon": "./icon.png",
+  "privacyPolicyUrl": "https://genomicintelligence.ai/privacy",
+  "repository": "https://github.com/genomicintelligence/claude-plugins",
+  "license": "MIT-0",
+  "keywords": [
+    "genomics",
+    "dna",
+    "bioinformatics",
+    "promoter",
+    "splice",
+    "gene-expression",
+    "mcp"
+  ]
+}

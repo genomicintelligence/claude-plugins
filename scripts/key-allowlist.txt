@@ -1,0 +1,5 @@
+# Key-shaped strings that are known placeholders, one exact string per line.
+# They come from the published skill (docs text and a deliberately invalid key
+# in an error-handling recipe). Anything else matching the key pattern fails CI.
+gi_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+gi_definitely_not_a_real_key

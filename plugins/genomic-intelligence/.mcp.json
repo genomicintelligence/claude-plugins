@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "gi": {
+      "type": "http",
+      "url": "https://mcp.genomicintelligence.ai/mcp",
+      "headers": {
+        "x-api-key": "${GI_API_KEY:-}",
+        "X-GI-Client-App": "gi-claude-plugin"
+      }
+    }
+  }
+}
